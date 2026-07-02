@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% block title %}Timetable{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold">Timetable</h4>
+    {% if user.role == 'admin' %}<a href="{% url 'timetable_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Slot</a>{% endif %}
+</div>
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+        <table class="table datatable">
+            <thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Semester</th><th>Subject</th><th>Teacher</th><th>Room</th>{% if user.role == 'admin' %}<th>Actions</th>{% endif %}</tr></thead>
+            <tbody>{% for s in slots %}
+                <tr>
+                    <td>{{ s.get_day_display }}</td>
+                    <td>{{ s.start_time|time:"h:i A" }} - {{ s.end_time|time:"h:i A" }}</td>
+                    <td>{{ s.course.code }}</td>
+                    <td>{{ s.semester }}</td>
+                    <td>{{ s.subject.name }}</td>
+                    <td>{{ s.teacher.name }}</td>
+                    <td>{{ s.room|default:"--" }}</td>
+                    {% if user.role == 'admin' %}
+                    <td>
+                        <a href="{% url 'timetable_update' s.pk %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'timetable_delete' s.pk %}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                    {% endif %}
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

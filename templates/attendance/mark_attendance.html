@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+{% block title %}Mark Attendance{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-3">Mark Attendance</h4>
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label class="form-label">Subject</label>
+                <select name="subject" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Select Subject --</option>
+                    {% for s in subjects %}
+                    <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:'s' %}selected{% endif %}>{{ s.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" class="form-control" value="{{ selected_date }}" onchange="this.form.submit()">
+            </div>
+        </form>
+
+        {% if students %}
+        <form method="post">{% csrf_token %}
+            <input type="hidden" name="subject" value="{{ selected_subject }}">
+            <input type="hidden" name="date" value="{{ selected_date }}">
+            <table class="table">
+                <thead><tr><th>Roll No</th><th>Name</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for s in students %}
+                    <tr>
+                        <td>{{ s.roll_number }}</td>
+                        <td>{{ s.user.get_full_name }}</td>
+                        <td>
+                            <input type="hidden" name="students" value="{{ s.id }}">
+                            <select name="status" class="form-select form-select-sm" style="width:auto;display:inline-block;">
+                                <option value="present">Present</option>
+                                <option value="absent">Absent</option>
+                                <option value="leave">Leave</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Save Attendance</button>
+        </form>
+        {% elif selected_subject %}
+        <p class="text-muted">No students found for this subject.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

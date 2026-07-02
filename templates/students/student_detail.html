@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ student.user.get_full_name }}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 rounded-3 text-center p-4">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width:100px;height:100px;font-size:32px;">
+                {{ student.user.first_name|first|upper }}{{ student.user.last_name|first|upper }}
+            </div>
+            <h5>{{ student.user.get_full_name }}</h5>
+            <p class="text-muted small mb-1">Roll: {{ student.roll_number }}</p>
+            <p class="text-muted small mb-1">{{ student.department.name }} - Sem {{ student.semester }}</p>
+            <p class="text-muted small">{{ student.course.name }}</p>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 rounded-3 mb-3">
+            <div class="card-header bg-white py-2"><h6 class="mb-0">Personal Info</h6></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 small">Email: {{ student.user.email }}</div>
+                    <div class="col-md-6 small">Phone: {{ student.phone }}</div>
+                    <div class="col-md-6 small">DOB: {{ student.date_of_birth }}</div>
+                    <div class="col-md-6 small">Blood Group: {{ student.blood_group }}</div>
+                    <div class="col-md-6 small">Parent: {{ student.parent_name }} ({{ student.parent_contact }})</div>
+                    <div class="col-md-6 small">Batch: {{ student.batch }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0 rounded-3 mb-3">
+            <div class="card-header bg-white py-2"><h6 class="mb-0">Recent Attendance</h6></div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead><tr><th>Date</th><th>Subject</th><th>Status</th></tr></thead>
+                    <tbody>{% for a in attendance %}
+                        <tr>
+                            <td>{{ a.date }}</td>
+                            <td>{{ a.subject.name }}</td>
+                            <td><span class="badge bg-{% if a.status == 'present' %}success{% elif a.status == 'absent' %}danger{% else %}warning{% endif %}">{{ a.status|title }}</span></td>
+                        </tr>{% empty %}
+                        <tr><td colspan="3" class="text-muted">No attendance records.</td></tr>
+                    {% endfor %}</tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

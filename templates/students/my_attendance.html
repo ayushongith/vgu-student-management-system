@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% block title %}My Attendance{% endblock %}
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card stat-card bg-primary text-white shadow-sm">
+            <div class="card-body text-center">
+                <div class="stat-value">{{ percentage }}%</div>
+                <div class="stat-label text-white-50">Attendance</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-white py-3"><h5 class="mb-0">Attendance Records</h5></div>
+    <div class="card-body">
+        <table class="table datatable">
+            <thead><tr><th>Date</th><th>Subject</th><th>Status</th></tr></thead>
+            <tbody>{% for a in attendance %}
+                <tr>
+                    <td>{{ a.date }}</td>
+                    <td>{{ a.subject.name }}</td>
+                    <td><span class="badge bg-{% if a.status == 'present' %}success{% elif a.status == 'absent' %}danger{% else %}warning{% endif %}">{{ a.status|title }}</span></td>
+                </tr>{% empty %}<tr><td colspan="3" class="text-muted">No records found.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+{% block title %}Fee Report{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-3">Fee Report</h4>
+<div class="row g-3">
+    <div class="col-md-4"><div class="card stat-card bg-success text-white shadow-sm"><div class="card-body text-center"><div class="stat-value">{{ total_collected }}</div><div class="stat-label text-white-50">Total Collected</div></div></div></div>
+    <div class="col-md-4"><div class="card stat-card bg-warning shadow-sm"><div class="card-body text-center"><div class="stat-value">{{ pending }}</div><div class="stat-label">Pending Payments</div></div></div></div>
+    <div class="col-md-4"><div class="card stat-card bg-info shadow-sm"><div class="card-body text-center"><div class="stat-value">{{ paid }}</div><div class="stat-label">Paid Payments</div></div></div></div>
+</div>
+{% endblock %}

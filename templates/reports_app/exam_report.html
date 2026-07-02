@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% block title %}Exam Report{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-3">Exam Report</h4>
+<form method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <select name="exam" class="form-select">
+            <option value="">-- Select Exam --</option>
+            {% for e in exams %}<option value="{{ e.id }}" {% if selected_exam|stringformat:'s' == e.id|stringformat:'s' %}selected{% endif %}>{{ e.name }} - {{ e.subject.name }}</option>{% endfor %}
+        </select>
+    </div>
+    <div class="col-auto"><button type="submit" class="btn btn-primary">View</button></div>
+</form>
+{% if marks_data %}
+<div class="row g-3 mb-3">
+    <div class="col-md-4"><div class="card stat-card bg-info text-white shadow-sm"><div class="card-body text-center"><div class="stat-value">{{ avg.avg_total|floatformat:1 }}</div><div class="stat-label text-white-50">Avg Total</div></div></div></div>
+</div>
+<div class="card shadow-sm border-0 rounded-3"><div class="card-body">
+    <table class="table datatable">
+        <thead><tr><th>Roll No</th><th>Student</th><th>Theory</th><th>Practical</th><th>Total</th><th>%</th><th>Grade</th></tr></thead>
+        <tbody>{% for m in marks_data %}
+            <tr>
+                <td>{{ m.roll }}</td><td>{{ m.student }}</td>
+                <td>{{ m.theory }}</td><td>{{ m.practical }}</td>
+                <td>{{ m.total }}</td><td>{{ m.pct }}%</td>
+                <td><span class="badge bg-{% if m.grade == 'F' %}danger{% else %}success{% endif %}">{{ m.grade }}</span></td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endif %}
+{% endblock %}

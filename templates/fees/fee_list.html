@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% block title %}Fees{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold">Fee Payments</h4>
+    <div>
+        <a href="{% url 'fee_category_list' %}" class="btn btn-info"><i class="bi bi-tags"></i> Categories</a>
+        {% if user.role == 'admin' %}<a href="{% url 'fee_payment_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Record Payment</a>{% endif %}
+    </div>
+</div>
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+        <table class="table datatable">
+            <thead><tr><th>Receipt</th><th>Student</th><th>Category</th><th>Amount</th><th>Due Date</th><th>Payment Date</th><th>Status</th></tr></thead>
+            <tbody>{% for p in payments %}
+                <tr>
+                    <td>{{ p.receipt_number|default:"--" }}</td>
+                    <td>{{ p.student.user.get_full_name }}</td>
+                    <td>{{ p.category.name }}</td>
+                    <td>{{ p.amount_paid }}</td>
+                    <td>{{ p.due_date }}</td>
+                    <td>{{ p.payment_date|default:"--" }}</td>
+                    <td><span class="badge bg-{% if p.status == 'paid' %}success{% elif p.status == 'pending' %}warning{% else %}danger{% endif %}">{{ p.status|title }}</span></td>
+                </tr>{% empty %}<tr><td colspan="7" class="text-muted">No payments.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

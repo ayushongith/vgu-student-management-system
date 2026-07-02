@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% block title %}My Assignments{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-3">My Assignments</h4>
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+        <table class="table datatable">
+            <thead><tr><th>Title</th><th>Subject</th><th>Teacher</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>{% for a in assignments %}
+                <tr>
+                    <td>{{ a.title }}</td>
+                    <td>{{ a.subject.name }}</td>
+                    <td>{{ a.teacher.name }}</td>
+                    <td>{{ a.due_date }}</td>
+                    <td>{% if a.id in submitted_ids %}<span class="badge bg-success">Submitted{% else %}<span class="badge bg-warning">Pending{% endif %}</span></td>
+                    <td>
+                        {% if a.id not in submitted_ids %}
+                        <form method="post" enctype="multipart/form-data" action="{% url 'submit_assignment' a.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="file" name="file" required>
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>{% empty %}<tr><td colspan="6" class="text-muted">No assignments.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

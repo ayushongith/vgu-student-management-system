@@ -1,0 +1,135 @@
+{% load static %}
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header d-flex align-items-center p-3">
+        <i class="bi bi-mortarboard-fill fs-4 me-2 text-primary"></i>
+        <span class="fw-bold fs-5 tracking-wide text-white">VGU Portal</span>
+    </div>
+    <hr class="my-0">
+    <ul class="nav flex-column py-2">
+        <li class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+            </a>
+        </li>
+
+        {% if user.role == 'admin' %}
+        <li class="nav-item {% if request.resolver_match.url_name == 'student_list' or request.resolver_match.url_name == 'student_create' or request.resolver_match.url_name == 'student_update' or request.resolver_match.url_name == 'student_detail' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'student_list' %}">
+                <i class="bi bi-people"></i> <span>Students</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'teacher_list' or request.resolver_match.url_name == 'teacher_create' or request.resolver_match.url_name == 'teacher_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'teacher_list' %}">
+                <i class="bi bi-person-badge"></i> <span>Teachers</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'department_list' or request.resolver_match.url_name == 'department_create' or request.resolver_match.url_name == 'department_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'department_list' %}">
+                <i class="bi bi-building"></i> <span>Departments</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'course_create' or request.resolver_match.url_name == 'course_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'course_list' %}">
+                <i class="bi bi-book"></i> <span>Courses</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'subject_list' or request.resolver_match.url_name == 'subject_create' or request.resolver_match.url_name == 'subject_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'subject_list' %}">
+                <i class="bi bi-journal-text"></i> <span>Subjects</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'attendance_list' or request.resolver_match.url_name == 'mark_attendance' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'attendance_list' %}">
+                <i class="bi bi-calendar-check"></i> <span>Attendance</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'exam_list' or request.resolver_match.url_name == 'exam_create' or request.resolver_match.url_name == 'exam_update' or request.resolver_match.url_name == 'upload_marks' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'exam_list' %}">
+                <i class="bi bi-trophy"></i> <span>Exams & Marks</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'timetable_list' or request.resolver_match.url_name == 'timetable_create' or request.resolver_match.url_name == 'timetable_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'timetable_list' %}">
+                <i class="bi bi-calendar-week"></i> <span>Timetable</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'assignment_list' or request.resolver_match.url_name == 'assignment_create' or request.resolver_match.url_name == 'assignment_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'assignment_list' %}">
+                <i class="bi bi-file-earmark-text"></i> <span>Assignments</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'notice_list' or request.resolver_match.url_name == 'notice_create' or request.resolver_match.url_name == 'notice_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'notice_list' %}">
+                <i class="bi bi-megaphone"></i> <span>Notice Board</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'fee_list' or request.resolver_match.url_name == 'fee_payment_create' or request.resolver_match.url_name == 'fee_category_list' or request.resolver_match.url_name == 'fee_category_create' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'fee_list' %}">
+                <i class="bi bi-cash-coin"></i> <span>Fees</span>
+            </a>
+        </li>
+        {% elif user.role == 'teacher' %}
+        <li class="nav-item {% if request.resolver_match.url_name == 'teacher_classes' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'teacher_classes' %}">
+                <i class="bi bi-book"></i> <span>My Classes</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'attendance_list' or request.resolver_match.url_name == 'mark_attendance' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'attendance_list' %}">
+                <i class="bi bi-calendar-check"></i> <span>Attendance</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'exam_list' or request.resolver_match.url_name == 'upload_marks' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'exam_list' %}">
+                <i class="bi bi-trophy"></i> <span>Marks</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'timetable_list' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'timetable_list' %}">
+                <i class="bi bi-calendar-week"></i> <span>Timetable</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'assignment_list' or request.resolver_match.url_name == 'assignment_create' or request.resolver_match.url_name == 'assignment_update' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'assignment_list' %}">
+                <i class="bi bi-file-earmark-text"></i> <span>Assignments</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'notice_list' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'notice_list' %}">
+                <i class="bi bi-megaphone"></i> <span>Notices</span>
+            </a>
+        </li>
+        {% elif user.role == 'student' %}
+        <li class="nav-item {% if request.resolver_match.url_name == 'my_attendance' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'my_attendance' %}">
+                <i class="bi bi-calendar-check"></i> <span>My Attendance</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'my_marks' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'my_marks' %}">
+                <i class="bi bi-trophy"></i> <span>My Marks</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'my_timetable' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'my_timetable' %}">
+                <i class="bi bi-calendar-week"></i> <span>Timetable</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'my_assignments' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'my_assignments' %}">
+                <i class="bi bi-file-earmark-text"></i> <span>Assignments</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'notice_list' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'notice_list' %}">
+                <i class="bi bi-megaphone"></i> <span>Notices</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'fee_list' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'fee_list' %}">
+                <i class="bi bi-cash-coin"></i> <span>Fees</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>

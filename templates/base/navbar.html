@@ -1,0 +1,39 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg top-navbar">
+    <div class="container-fluid">
+        <button class="btn btn-sm btn-outline-secondary me-3 d-lg-none" id="menu-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="d-flex align-items-center">
+            <span class="text-muted small">{% now "l, d M Y" %}</span>
+        </div>
+        <div class="d-flex align-items-center ms-auto gap-3">
+            <div class="theme-switch-wrapper">
+                <button id="theme-toggle" class="theme-switch-btn" aria-label="Toggle dark theme">
+                    <i class="bi bi-moon-fill"></i>
+                </button>
+            </div>
+            <div class="dropdown">
+                <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                    {% if user.profile_photo %}
+                    <img src="{{ user.profile_photo.url }}" class="rounded-circle me-2" width="35" height="35">
+                    {% else %}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width:35px;height:35px;font-size:14px;">
+                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <small class="fw-bold d-block">{{ user.get_full_name }}</small>
+                        <small class="text-muted">{{ user.get_role_display }}</small>
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'change_password' %}"><i class="bi bi-key"></i> Change Password</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
