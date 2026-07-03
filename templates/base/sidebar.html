@@ -63,6 +63,11 @@
                 <i class="bi bi-megaphone"></i> <span>Notice Board</span>
             </a>
         </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'forum_list' or request.resolver_match.url_name == 'subject_threads' or request.resolver_match.url_name == 'thread_detail' or request.resolver_match.url_name == 'create_thread' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'forum_list' %}">
+                <i class="bi bi-chat-left-quote"></i> <span>Discussion Forums</span>
+            </a>
+        </li>
         <li class="nav-item {% if request.resolver_match.url_name == 'fee_list' or request.resolver_match.url_name == 'fee_payment_create' or request.resolver_match.url_name == 'fee_category_list' or request.resolver_match.url_name == 'fee_category_create' %}active{% endif %}">
             <a class="nav-link" href="{% url 'fee_list' %}">
                 <i class="bi bi-cash-coin"></i> <span>Fees</span>
@@ -99,6 +104,11 @@
                 <i class="bi bi-megaphone"></i> <span>Notices</span>
             </a>
         </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'forum_list' or request.resolver_match.url_name == 'subject_threads' or request.resolver_match.url_name == 'thread_detail' or request.resolver_match.url_name == 'create_thread' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'forum_list' %}">
+                <i class="bi bi-chat-left-quote"></i> <span>Discussion Forums</span>
+            </a>
+        </li>
         {% elif user.role == 'student' %}
         <li class="nav-item {% if request.resolver_match.url_name == 'my_attendance' %}active{% endif %}">
             <a class="nav-link" href="{% url 'my_attendance' %}">
@@ -128,6 +138,11 @@
         <li class="nav-item {% if request.resolver_match.url_name == 'fee_list' %}active{% endif %}">
             <a class="nav-link" href="{% url 'fee_list' %}">
                 <i class="bi bi-cash-coin"></i> <span>Fees</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'forum_list' or request.resolver_match.url_name == 'subject_threads' or request.resolver_match.url_name == 'thread_detail' or request.resolver_match.url_name == 'create_thread' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'forum_list' %}">
+                <i class="bi bi-chat-left-quote"></i> <span>Discussion Forums</span>
             </a>
         </li>
         {% endif %}

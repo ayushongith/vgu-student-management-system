@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'fees',
     'reports_app',
     'api',
+    'forums',
 ]
 
 if DEBUG:

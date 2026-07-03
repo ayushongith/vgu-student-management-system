@@ -81,6 +81,7 @@ urlpatterns = [
     path('fees/', include('fees.urls')),
     path('reports/', include('reports_app.urls')),
     path('api/', include('api.urls')),
+    path('forums/', include('forums.urls')),
 ]
 
 if settings.DEBUG:
