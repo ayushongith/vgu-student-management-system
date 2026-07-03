@@ -114,6 +114,31 @@ def seed():
         admin_user = t1_user
     Notice.objects.create(title='Welcome to Semester 2', content='Classes begin next week.', posted_by=admin_user, priority='high', is_active=True)
 
+    print("Creating Forums...")
+    from forums.models import ForumThread, ForumPost
+    ForumThread.objects.all().delete()
+    thread1 = ForumThread.objects.create(
+        subject=sub_ds,
+        author=t1_user,
+        title='Welcome to Data Structures Forum',
+        content='Use this board to ask questions about BST assignments, sorting algorithms, and general course materials.'
+    )
+    ForumPost.objects.create(
+        thread=thread1,
+        author=students[0].user,
+        content='Thanks Professor Alice! Looking forward to this semester.'
+    )
+    ForumPost.objects.create(
+        thread=thread1,
+        author=students[1].user,
+        content='Is the first assignment due this Sunday?'
+    )
+    ForumPost.objects.create(
+        thread=thread1,
+        author=t1_user,
+        content='Yes, Sunday night at 11:59 PM is the hard deadline.'
+    )
+
     print("Dummy data seeded successfully!")
 
 if __name__ == '__main__':
