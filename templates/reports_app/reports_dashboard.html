@@ -3,30 +3,39 @@
 {% block content %}
 <h4 class="fw-bold mb-3">Reports Dashboard</h4>
 <div class="row g-3">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a href="{% url 'attendance_report' %}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
                 <i class="bi bi-calendar-check fs-1 text-primary"></i>
                 <h5 class="mt-2">Attendance Report</h5>
                 <p class="text-muted small">View daily attendance statistics</p>
             </div>
         </a>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a href="{% url 'exam_report' %}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
                 <i class="bi bi-trophy fs-1 text-success"></i>
                 <h5 class="mt-2">Exam Report</h5>
                 <p class="text-muted small">Student marks and performance</p>
             </div>
         </a>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a href="{% url 'fee_report' %}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
                 <i class="bi bi-cash-coin fs-1 text-warning"></i>
                 <h5 class="mt-2">Fee Report</h5>
                 <p class="text-muted small">Fee collection summaries</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'academic_predictor' %}" class="text-decoration-none">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
+                <i class="bi bi-cpu fs-1 text-info"></i>
+                <h5 class="mt-2">Academic Advisor</h5>
+                <p class="text-muted small">Attendance & CGPA predictions</p>
             </div>
         </a>
     </div>

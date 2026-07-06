@@ -73,6 +73,16 @@
                 <i class="bi bi-cash-coin"></i> <span>Fees</span>
             </a>
         </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'reports_dashboard' or request.resolver_match.url_name == 'attendance_report' or request.resolver_match.url_name == 'exam_report' or request.resolver_match.url_name == 'fee_report' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'reports_dashboard' %}">
+                <i class="bi bi-graph-up"></i> <span>Reports</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'academic_predictor' or request.resolver_match.url_name == 'academic_predictor_detail' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'academic_predictor' %}">
+                <i class="bi bi-cpu"></i> <span>Academic Advisor</span>
+            </a>
+        </li>
         {% elif user.role == 'teacher' %}
         <li class="nav-item {% if request.resolver_match.url_name == 'teacher_classes' %}active{% endif %}">
             <a class="nav-link" href="{% url 'teacher_classes' %}">
@@ -109,6 +119,11 @@
                 <i class="bi bi-chat-left-quote"></i> <span>Discussion Forums</span>
             </a>
         </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'academic_predictor' or request.resolver_match.url_name == 'academic_predictor_detail' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'academic_predictor' %}">
+                <i class="bi bi-cpu"></i> <span>Academic Advisor</span>
+            </a>
+        </li>
         {% elif user.role == 'student' %}
         <li class="nav-item {% if request.resolver_match.url_name == 'my_attendance' %}active{% endif %}">
             <a class="nav-link" href="{% url 'my_attendance' %}">
@@ -143,6 +158,11 @@
         <li class="nav-item {% if request.resolver_match.url_name == 'forum_list' or request.resolver_match.url_name == 'subject_threads' or request.resolver_match.url_name == 'thread_detail' or request.resolver_match.url_name == 'create_thread' %}active{% endif %}">
             <a class="nav-link" href="{% url 'forum_list' %}">
                 <i class="bi bi-chat-left-quote"></i> <span>Discussion Forums</span>
+            </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'academic_predictor' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'academic_predictor' %}">
+                <i class="bi bi-cpu"></i> <span>Academic Advisor</span>
             </a>
         </li>
         {% endif %}

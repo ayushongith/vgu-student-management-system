@@ -6,4 +6,6 @@ urlpatterns = [
     path('attendance/', views.attendance_report, name='attendance_report'),
     path('exam/', views.exam_report, name='exam_report'),
     path('fee/', views.fee_report, name='fee_report'),
+    path('predictor/', views.academic_predictor, name='academic_predictor'),
+    path('predictor/<int:student_id>/', views.academic_predictor, name='academic_predictor_detail'),
 ]
