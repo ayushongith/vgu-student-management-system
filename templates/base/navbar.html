@@ -13,6 +13,44 @@
                     <i class="bi bi-moon-fill"></i>
                 </button>
             </div>
+            <!-- Notifications Dropdown -->
+            <div class="dropdown" id="notificationDropdownContainer">
+                <button class="btn btn-link text-secondary position-relative p-1 me-2" id="notificationBell" data-bs-toggle="dropdown" aria-expanded="false" style="box-shadow: none;">
+                    <i class="bi bi-bell-fill fs-5"></i>
+                    {% if unread_notifications_count > 0 %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; padding: 0.35em 0.5em;">
+                        {{ unread_notifications_count }}
+                    </span>
+                    {% endif %}
+                </button>
+                <div class="dropdown-menu dropdown-menu-end shadow p-0" style="width: 320px; border: 0;" aria-labelledby="notificationBell">
+                    <div class="card border-0">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2 px-3">
+                            <span class="fw-bold small">Notifications</span>
+                            {% if unread_notifications_count > 0 %}
+                            <a href="{% url 'mark_all_read' %}" class="text-white text-decoration-none small" style="font-size: 11px;"><i class="bi bi-check-all"></i> Mark Read</a>
+                            {% endif %}
+                        </div>
+                        <div class="list-group list-group-flush" style="max-height: 280px; overflow-y: auto;">
+                            {% for n in recent_notifications %}
+                            <div class="list-group-item p-3 {% if not n.is_read %}bg-body-tertiary{% endif %} border-0 border-bottom">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <span class="fw-bold small {% if not n.is_read %}text-primary{% endif %}" style="font-size: 13px;">{{ n.title }}</span>
+                                    <small class="text-muted" style="font-size: 10px;">{{ n.created_at|timesince }}</small>
+                                </div>
+                                <p class="mb-0 text-secondary small" style="line-height: 1.4; font-size: 12px;">{{ n.message|truncatechars:70 }}</p>
+                            </div>
+                            {% empty %}
+                            <div class="text-center py-4 text-muted small">No notifications yet.</div>
+                            {% endfor %}
+                        </div>
+                        <div class="card-footer text-center py-2 bg-light">
+                            <a href="{% url 'notifications_list' %}" class="text-decoration-none text-primary fw-bold small" style="font-size: 12px;">View All Alerts</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="dropdown">
                 <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
                     {% if user.profile_photo %}

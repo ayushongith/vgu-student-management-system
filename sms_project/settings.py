@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'reports_app',
     'api',
     'forums',
+    'notifications',
 ]
 
 if DEBUG:
@@ -78,6 +79,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'notifications.context_processors.unread_notifications',
             ],
         },
     },
@@ -155,3 +157,6 @@ SWAGGER_SETTINGS = {
         'Bearer': {'type': 'apiKey', 'name': 'Authorization', 'in': 'header'}
     },
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'portal-alerts@vgu.edu.in'

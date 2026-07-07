@@ -82,6 +82,7 @@ urlpatterns = [
     path('reports/', include('reports_app.urls')),
     path('api/', include('api.urls')),
     path('forums/', include('forums.urls')),
+    path('notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG:

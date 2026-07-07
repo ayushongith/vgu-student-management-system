@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+{% block title %}Notifications History{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in" style="animation-delay: 0.05s;">
+    <div>
+        <h4 class="fw-bold m-0">System Notifications</h4>
+        <small class="text-muted">History of all assignment alerts, notices, exam gradings, and fee payments</small>
+    </div>
+    {% if unread_notifications_count > 0 %}
+    <a href="{% url 'mark_all_read' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-check-all"></i> Mark All as Read</a>
+    {% endif %}
+</div>
+
+<div class="card border-0 shadow-sm animate-fade-in" style="animation-delay: 0.1s;">
+    <div class="card-header py-3"><h6 class="mb-0 fw-bold"><i class="bi bi-bell me-2 text-primary"></i>Notification Log</h6></div>
+    <div class="card-body p-0">
+        <div class="list-group list-group-flush">
+        {% for n in notifications %}
+            <div class="list-group-item p-4 border-0 border-bottom d-flex align-items-start gap-3 {% if not n.is_read %}bg-body-tertiary{% endif %}">
+                <!-- Icon Indicator depending on type -->
+                <div class="rounded-circle p-2.5 bg-primary-light text-primary d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0;">
+                    {% if n.notification_type == 'assignment' %}
+                        <i class="bi bi-file-earmark-text fs-5"></i>
+                    {% elif n.notification_type == 'marks' %}
+                        <i class="bi bi-trophy fs-5"></i>
+                    {% elif n.notification_type == 'fee' %}
+                        <i class="bi bi-cash-coin fs-5"></i>
+                    {% else %}
+                        <i class="bi bi-megaphone fs-5"></i>
+                    {% endif %}
+                </div>
+                
+                <div class="w-100">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <h6 class="fw-bold m-0 {% if not n.is_read %}text-primary{% endif %}" style="font-size: 15px;">{{ n.title }}</h6>
+                        <small class="text-muted" style="font-size: 12px;">{{ n.created_at|date:"d M Y, H:i" }}</small>
+                    </div>
+                    <p class="mb-0 text-secondary" style="font-size: 14px; line-height: 1.5;">{{ n.message }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-bell-slash fs-2 mb-2 d-block opacity-50"></i>
+                You have no notification alerts recorded in your profile history.
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
