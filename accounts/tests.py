@@ -203,3 +203,45 @@ class ProjectSmokeTests(TestCase):
         ]:
             response = client.get(path)
             self.assertEqual(response.status_code, 200, path)
+
+    def test_student_can_update_profile(self):
+        self.client.force_login(self.student_user)
+        response = self.client.post(reverse('profile'), {
+            'first_name': 'NewStudentName',
+            'last_name': 'User',
+            'email': 'newstudent@test.com',
+            'phone': '12345',
+            'gender': 'female',
+            'date_of_birth': '2001-05-15',
+            'parent_name': 'NewParent',
+            'parent_contact': '999',
+            'address': 'NewAddress'
+        })
+        self.assertEqual(response.status_code, 302)
+        # Refresh and assert
+        self.student_user.refresh_from_db()
+        self.student.refresh_from_db()
+        self.assertEqual(self.student_user.first_name, 'NewStudentName')
+        self.assertEqual(self.student_user.email, 'newstudent@test.com')
+        self.assertEqual(self.student.gender, 'female')
+        self.assertEqual(self.student.parent_name, 'NewParent')
+        self.assertEqual(self.student.address, 'NewAddress')
+
+    def test_teacher_can_update_profile(self):
+        self.client.force_login(self.teacher_user)
+        response = self.client.post(reverse('profile'), {
+            'first_name': 'NewTeacherName',
+            'last_name': 'User',
+            'email': 'newteacher@test.com',
+            'phone': '54321',
+            'qualification': 'PhD Computer Science',
+            'address': 'NewTeacherAddress'
+        })
+        self.assertEqual(response.status_code, 302)
+        # Refresh and assert
+        self.teacher_user.refresh_from_db()
+        self.teacher.refresh_from_db()
+        self.assertEqual(self.teacher_user.first_name, 'NewTeacherName')
+        self.assertEqual(self.teacher_user.email, 'newteacher@test.com')
+        self.assertEqual(self.teacher.qualification, 'PhD Computer Science')
+        self.assertEqual(self.teacher.address, 'NewTeacherAddress')

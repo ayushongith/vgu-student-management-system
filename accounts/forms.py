@@ -31,3 +31,30 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     new_password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+from students.models import Student
+from teachers.models import Teacher
+
+class StudentProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ('gender', 'date_of_birth', 'parent_name', 'parent_contact', 'address')
+        widgets = {
+            'gender': forms.Select(attrs={'class': 'form-select'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'parent_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'parent_contact': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+
+class TeacherProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ('qualification', 'address')
+        widgets = {
+            'qualification': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
