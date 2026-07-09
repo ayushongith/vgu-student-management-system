@@ -37,17 +37,22 @@
 
 <!-- Selected Student Header Details -->
 <div class="card border-0 shadow-sm mb-4 bg-primary text-white animate-fade-in" style="animation-delay: 0.15s;">
-    <div class="card-body p-4 d-flex align-items-center gap-3">
-        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold" style="width: 52px; height: 52px; font-size: 20px;">
-            {{ selected_student.user.first_name|first|upper }}{{ selected_student.user.last_name|first|upper }}
+    <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold" style="width: 52px; height: 52px; font-size: 20px;">
+                {{ selected_student.user.first_name|first|upper }}{{ selected_student.user.last_name|first|upper }}
+            </div>
+            <div>
+                <h5 class="fw-bold m-0">{{ selected_student.user.get_full_name|default:selected_student.user.username }}</h5>
+                <small class="opacity-75">
+                    Roll Number: {{ selected_student.roll_number }} &bull; 
+                    Course: {{ selected_student.course.name }} &bull; 
+                    Semester: {{ selected_student.semester }}
+                </small>
+            </div>
         </div>
         <div>
-            <h5 class="fw-bold m-0">{{ selected_student.user.get_full_name|default:selected_student.user.username }}</h5>
-            <small class="opacity-75">
-                Roll Number: {{ selected_student.roll_number }} &bull; 
-                Course: {{ selected_student.course.name }} &bull; 
-                Semester: {{ selected_student.semester }}
-            </small>
+            <a href="{% url 'download_transcript' selected_student.pk %}" class="btn btn-light btn-sm text-primary fw-bold"><i class="bi bi-file-pdf me-1"></i> Export Transcript</a>
         </div>
     </div>
 </div>

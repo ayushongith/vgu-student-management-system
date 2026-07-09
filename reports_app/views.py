@@ -173,3 +173,203 @@ def academic_predictor(request, student_id=None):
         }
     })
 
+
+@login_required
+def download_transcript(request, student_id=None):
+    import io
+    from datetime import date
+    from django.http import FileResponse, Http404
+    from django.shortcuts import get_object_or_404
+    from django.core.exceptions import PermissionDenied
+    from reportlab.lib.pagesizes import letter
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib import colors
+    
+    from students.models import Student
+    from exams.models import Marks
+
+    user = request.user
+    selected_student = None
+
+    if user.role in ['admin', 'teacher']:
+        if student_id:
+            selected_student = get_object_or_404(Student, pk=student_id)
+        else:
+            first_student = Student.objects.first()
+            if first_student:
+                selected_student = first_student
+    elif user.role == 'student':
+        selected_student = get_object_or_404(Student, user=user)
+        if student_id and student_id != selected_student.pk:
+            raise PermissionDenied("You do not have permission to view other students' transcripts.")
+
+    if not selected_student:
+        raise Http404("Student record not found.")
+
+    marks_qs = Marks.objects.filter(student=selected_student).select_related('exam__subject')
+    
+    avg_pct = 0.0
+    projected_cgpa = 0.0
+    if marks_qs.exists():
+        avg_pct = sum(m.percentage for m in marks_qs) / marks_qs.count()
+        projected_cgpa = min(10.0, round((avg_pct / 10.0), 2))
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=letter,
+        rightMargin=54,
+        leftMargin=54,
+        topMargin=54,
+        bottomMargin=54
+    )
+    
+    story = []
+    styles = getSampleStyleSheet()
+    
+    title_style = ParagraphStyle(
+        'TitleStyle',
+        parent=styles['Heading1'],
+        fontName='Helvetica-Bold',
+        fontSize=18,
+        leading=22,
+        textColor=colors.HexColor('#007bff'),
+        alignment=1
+    )
+    subtitle_style = ParagraphStyle(
+        'SubtitleStyle',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=10,
+        leading=14,
+        textColor=colors.gray,
+        alignment=1,
+        spaceAfter=15
+    )
+    section_title = ParagraphStyle(
+        'SectionTitle',
+        parent=styles['Heading2'],
+        fontName='Helvetica-Bold',
+        fontSize=12,
+        leading=16,
+        textColor=colors.HexColor('#333333'),
+        alignment=1,
+        spaceAfter=15
+    )
+    label_style = ParagraphStyle(
+        'LabelStyle',
+        parent=styles['Normal'],
+        fontName='Helvetica-Bold',
+        fontSize=9,
+        leading=12
+    )
+    val_style = ParagraphStyle(
+        'ValStyle',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=9,
+        leading=12
+    )
+    
+    story.append(Paragraph("VIVEKANAND GLOBAL UNIVERSITY", title_style))
+    story.append(Paragraph("OFFICE OF THE CONTROLLER OF EXAMINATIONS & STUDENT RECORDS", subtitle_style))
+    story.append(Paragraph("<b>OFFICIAL ACADEMIC TRANSCRIPT</b>", section_title))
+    
+    student_meta = [
+        [
+            Paragraph("<b>Name:</b>", label_style), Paragraph(selected_student.user.get_full_name() or selected_student.user.username, val_style),
+            Paragraph("<b>Department:</b>", label_style), Paragraph(selected_student.department.name, val_style)
+        ],
+        [
+            Paragraph("<b>Roll Number:</b>", label_style), Paragraph(selected_student.roll_number, val_style),
+            Paragraph("<b>Course:</b>", label_style), Paragraph(selected_student.course.name, val_style)
+        ],
+        [
+            Paragraph("<b>Admission ID:</b>", label_style), Paragraph(selected_student.admission_number, val_style),
+            Paragraph("<b>Date Generated:</b>", label_style), Paragraph(date.today().strftime('%d %B %Y'), val_style)
+        ]
+    ]
+    
+    meta_table = Table(student_meta, colWidths=[90, 160, 90, 160])
+    meta_table.setStyle(TableStyle([
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+        ('TOPPADDING', (0,0), (-1,-1), 6),
+        ('LINEBELOW', (0,0), (-1,-1), 0.5, colors.lightgrey),
+    ]))
+    story.append(meta_table)
+    story.append(Spacer(1, 20))
+    
+    grades_data = [
+        [
+            Paragraph("<b>Exam Name</b>", val_style),
+            Paragraph("<b>Subject</b>", val_style),
+            Paragraph("<b>Theory</b>", val_style),
+            Paragraph("<b>Practical</b>", val_style),
+            Paragraph("<b>Total</b>", val_style),
+            Paragraph("<b>Grade</b>", val_style)
+        ]
+    ]
+    
+    for m in marks_qs:
+        max_total = m.exam.max_theory_marks + m.exam.max_practical_marks
+        grades_data.append([
+            Paragraph(m.exam.name, val_style),
+            Paragraph(m.exam.subject.name, val_style),
+            Paragraph(str(m.theory_marks), val_style),
+            Paragraph(str(m.practical_marks), val_style),
+            Paragraph(f"{m.total_marks} / {max_total}", val_style),
+            Paragraph(f"<b>{m.grade}</b>", val_style)
+        ])
+        
+    if marks_qs.exists():
+        grades_data.append([
+            Paragraph(f"<b>Cumulative Average: {round(avg_pct, 1)}%</b>", val_style),
+            Paragraph("", val_style),
+            Paragraph("", val_style),
+            Paragraph("", val_style),
+            Paragraph(f"<b>Projected CGPA: {projected_cgpa} / 10.0</b>", val_style),
+            Paragraph("", val_style)
+        ])
+    else:
+        grades_data.append([Paragraph("No academic scores registered yet.", val_style), "", "", "", "", ""])
+        
+    grades_table = Table(grades_data, colWidths=[120, 120, 50, 60, 80, 70])
+    
+    t_style = [
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#007bff')),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+        ('TOPPADDING', (0,0), (-1,-1), 6),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#dddddd')),
+    ]
+    
+    if marks_qs.exists():
+        t_style.append(('SPAN', (0, -1), (3, -1)))
+        t_style.append(('SPAN', (4, -1), (5, -1)))
+        t_style.append(('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#f8f9fa')))
+        
+    grades_table.setStyle(TableStyle(t_style))
+    story.append(grades_table)
+    story.append(Spacer(1, 40))
+    
+    sig_data = [
+        [Paragraph("Prepared By: __________________", val_style), Paragraph("Controller of Examinations: __________________", val_style)]
+    ]
+    sig_table = Table(sig_data, colWidths=[250, 250])
+    sig_table.setStyle(TableStyle([
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('TOPPADDING', (0,0), (-1,-1), 10),
+    ]))
+    story.append(sig_table)
+    
+    doc.build(story)
+    buffer.seek(0)
+    
+    response = FileResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="transcript_{selected_student.roll_number}.pdf"'
+    return response
+
+

@@ -68,3 +68,25 @@ class ReportsAppTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Academic Advisor & Predictor')
 
+    def test_download_transcript_student_self(self):
+        self.client.login(username='student_u1', password='password')
+        response = self.client.get(reverse('download_student_transcript'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/pdf')
+        # Check PDF signature
+        pdf_content = b''.join(response.streaming_content)
+        self.assertTrue(pdf_content.startswith(b'%PDF-'))
+
+    def test_download_transcript_student_other_forbidden(self):
+        self.client.login(username='student_u1', password='password')
+        response = self.client.get(reverse('download_transcript', args=[self.student2.pk]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_download_transcript_admin(self):
+        self.client.login(username='admin1', password='password')
+        response = self.client.get(reverse('download_transcript', args=[self.student2.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/pdf')
+        pdf_content = b''.join(response.streaming_content)
+        self.assertTrue(pdf_content.startswith(b'%PDF-'))
+
