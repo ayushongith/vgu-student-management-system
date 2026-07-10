@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'api',
     'forums',
     'notifications',
+    'calendar_app',
 ]
 
 if DEBUG:

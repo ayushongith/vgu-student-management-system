@@ -83,6 +83,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('forums/', include('forums.urls')),
     path('notifications/', include('notifications.urls')),
+    path('calendar/', include('calendar_app.urls')),
 ]
 
 if settings.DEBUG:

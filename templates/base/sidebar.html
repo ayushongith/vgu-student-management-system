@@ -11,6 +11,11 @@
                 <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
             </a>
         </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'academic_calendar' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'academic_calendar' %}">
+                <i class="bi bi-calendar3"></i> <span>Academic Calendar</span>
+            </a>
+        </li>
 
         {% if user.role == 'admin' %}
         <li class="nav-item {% if request.resolver_match.url_name == 'student_list' or request.resolver_match.url_name == 'student_create' or request.resolver_match.url_name == 'student_update' or request.resolver_match.url_name == 'student_detail' %}active{% endif %}">
