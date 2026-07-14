@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'forums',
     'notifications',
     'calendar_app',
+    'audit_logs',
 ]
 
 if DEBUG:
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'audit_logs.middleware.AuditRequestMiddleware',
 ]
 
 if DEBUG:

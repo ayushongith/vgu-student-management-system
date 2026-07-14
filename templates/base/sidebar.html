@@ -88,6 +88,11 @@
                 <i class="bi bi-cpu"></i> <span>Academic Advisor</span>
             </a>
         </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'audit_logs_list' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'audit_logs_list' %}">
+                <i class="bi bi-shield-check"></i> <span>System Audit Trail</span>
+            </a>
+        </li>
         {% elif user.role == 'teacher' %}
         <li class="nav-item {% if request.resolver_match.url_name == 'teacher_classes' %}active{% endif %}">
             <a class="nav-link" href="{% url 'teacher_classes' %}">

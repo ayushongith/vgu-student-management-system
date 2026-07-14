@@ -84,6 +84,7 @@ urlpatterns = [
     path('forums/', include('forums.urls')),
     path('notifications/', include('notifications.urls')),
     path('calendar/', include('calendar_app.urls')),
+    path('audit-logs/', include('audit_logs.urls')),
 ]
 
 if settings.DEBUG:
