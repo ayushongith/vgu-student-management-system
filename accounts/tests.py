@@ -245,3 +245,28 @@ class ProjectSmokeTests(TestCase):
         self.assertEqual(self.teacher_user.email, 'newteacher@test.com')
         self.assertEqual(self.teacher.qualification, 'PhD Computer Science')
         self.assertEqual(self.teacher.address, 'NewTeacherAddress')
+
+    def test_profile_photo_cleanup_on_delete_and_change(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        import os
+        
+        photo = SimpleUploadedFile("avatar.jpg", b"file_content", content_type="image/jpeg")
+        user = User.objects.create_user(
+            username='temp_user',
+            password='password123',
+            profile_photo=photo
+        )
+        
+        photo_path = user.profile_photo.path
+        self.assertTrue(os.path.exists(photo_path))
+
+        new_photo = SimpleUploadedFile("avatar2.jpg", b"new_file_content", content_type="image/jpeg")
+        user.profile_photo = new_photo
+        user.save()
+        
+        self.assertFalse(os.path.exists(photo_path))
+        new_photo_path = user.profile_photo.path
+        self.assertTrue(os.path.exists(new_photo_path))
+        
+        user.delete()
+        self.assertFalse(os.path.exists(new_photo_path))

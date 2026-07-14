@@ -114,6 +114,37 @@ def seed():
         admin_user = t1_user
     Notice.objects.create(title='Welcome to Semester 2', content='Classes begin next week.', posted_by=admin_user, priority='high', is_active=True)
 
+    print("Creating Calendar Events...")
+    from calendar_app.models import Event
+    from django.utils import timezone
+    
+    Event.objects.all().delete()
+    
+    Event.objects.create(
+        title='VGU TechFest 2026',
+        description='Annual inter-collegiate technical event containing hackathons, robotics, and coding competitions.',
+        start_time=timezone.now() + timezone.timedelta(days=3),
+        end_time=timezone.now() + timezone.timedelta(days=4),
+        event_type='cultural',
+        created_by=admin_user
+    )
+    Event.objects.create(
+        title='Seminar: AI and Cloud Systems',
+        description='Guest lecture by VGU Alumni working in tech on building cloud-native models.',
+        start_time=timezone.now() + timezone.timedelta(days=1, hours=2),
+        end_time=timezone.now() + timezone.timedelta(days=1, hours=4),
+        event_type='seminar',
+        created_by=admin_user
+    )
+    Event.objects.create(
+        title='Official Holiday: Independence Day',
+        description='National holiday, campus closed.',
+        start_time=timezone.now() + timezone.timedelta(days=7),
+        end_time=timezone.now() + timezone.timedelta(days=8),
+        event_type='holiday',
+        created_by=admin_user
+    )
+
     print("Creating Forums...")
     from forums.models import ForumThread, ForumPost
     ForumThread.objects.all().delete()
