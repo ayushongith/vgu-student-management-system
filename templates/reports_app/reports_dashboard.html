@@ -1,43 +1,213 @@
 {% extends 'base/base.html' %}
-{% block title %}Reports{% endblock %}
+{% block title %}Reports & Analytics{% endblock %}
 {% block content %}
-<h4 class="fw-bold mb-3">Reports Dashboard</h4>
-<div class="row g-3">
+
+<!-- Chart.js CDN Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in" style="animation-delay: 0.05s;">
+    <div>
+        <h4 class="fw-bold m-0">Reports & Analytics Dashboard</h4>
+        <small class="text-muted">Interactive analytical visual charts tracking admissions, grades, finances, and attendance spreads</small>
+    </div>
+</div>
+
+<!-- Grid: Category Reports Shortcuts -->
+<div class="row g-3 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
     <div class="col-md-3">
-        <a href="{% url 'attendance_report' %}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
-                <i class="bi bi-calendar-check fs-1 text-primary"></i>
-                <h5 class="mt-2">Attendance Report</h5>
-                <p class="text-muted small">View daily attendance statistics</p>
+        <a href="{% url 'attendance_report' %}" class="text-decoration-none text-dark">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3 stat-card h-100 bg-white hover-shadow transition">
+                <i class="bi bi-calendar-check fs-2 text-primary mb-1"></i>
+                <h6 class="fw-bold m-0 text-secondary" style="font-size: 14px;">Attendance Logs</h6>
+                <p class="text-muted small m-0" style="font-size: 11px;">Daily rolls & percentages</p>
             </div>
         </a>
     </div>
     <div class="col-md-3">
-        <a href="{% url 'exam_report' %}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
-                <i class="bi bi-trophy fs-1 text-success"></i>
-                <h5 class="mt-2">Exam Report</h5>
-                <p class="text-muted small">Student marks and performance</p>
+        <a href="{% url 'exam_report' %}" class="text-decoration-none text-dark">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3 stat-card h-100 bg-white hover-shadow transition">
+                <i class="bi bi-trophy fs-2 text-success mb-1"></i>
+                <h6 class="fw-bold m-0 text-secondary" style="font-size: 14px;">Exam Performance</h6>
+                <p class="text-muted small m-0" style="font-size: 11px;">Class grades & stats</p>
             </div>
         </a>
     </div>
     <div class="col-md-3">
-        <a href="{% url 'fee_report' %}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
-                <i class="bi bi-cash-coin fs-1 text-warning"></i>
-                <h5 class="mt-2">Fee Report</h5>
-                <p class="text-muted small">Fee collection summaries</p>
+        <a href="{% url 'fee_report' %}" class="text-decoration-none text-dark">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3 stat-card h-100 bg-white hover-shadow transition">
+                <i class="bi bi-cash-coin fs-2 text-warning mb-1"></i>
+                <h6 class="fw-bold m-0 text-secondary" style="font-size: 14px;">Fee Billings</h6>
+                <p class="text-muted small m-0" style="font-size: 11px;">Collections & defaults</p>
             </div>
         </a>
     </div>
     <div class="col-md-3">
-        <a href="{% url 'academic_predictor' %}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 rounded-3 text-center p-4 stat-card h-100">
-                <i class="bi bi-cpu fs-1 text-info"></i>
-                <h5 class="mt-2">Academic Advisor</h5>
-                <p class="text-muted small">Attendance & CGPA predictions</p>
+        <a href="{% url 'academic_predictor' %}" class="text-decoration-none text-dark">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3 stat-card h-100 bg-white hover-shadow transition">
+                <i class="bi bi-cpu fs-2 text-info mb-1"></i>
+                <h6 class="fw-bold m-0 text-secondary" style="font-size: 14px;">Academic Advisor</h6>
+                <p class="text-muted small m-0" style="font-size: 11px;">CGPA risk assessments</p>
             </div>
         </a>
     </div>
 </div>
+
+<!-- Interactive Analytics Charts Grid -->
+<div class="row g-4 mb-4">
+    <!-- Chart: Attendance Spread -->
+    <div class="col-lg-6 animate-fade-in" style="animation-delay: 0.15s;">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3 bg-white border-0"><h6 class="mb-0 fw-bold"><i class="bi bi-pie-chart me-2 text-primary"></i>Attendance Distribution</h6></div>
+            <div class="card-body d-flex align-items-center justify-content-center p-4">
+                <div style="max-height: 250px; position: relative; width: 100%;">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart: Course Enrollments -->
+    <div class="col-lg-6 animate-fade-in" style="animation-delay: 0.2s;">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3 bg-white border-0"><h6 class="mb-0 fw-bold"><i class="bi bi-bar-chart me-2 text-success"></i>Admissions per Course</h6></div>
+            <div class="card-body d-flex align-items-center justify-content-center p-4">
+                <div style="max-height: 250px; position: relative; width: 100%;">
+                    <canvas id="courseChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Chart: Fee Invoices Statuses -->
+    <div class="col-lg-6 animate-fade-in" style="animation-delay: 0.25s;">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3 bg-white border-0"><h6 class="mb-0 fw-bold"><i class="bi bi-wallet2 me-2 text-warning"></i>Fee Collections Status</h6></div>
+            <div class="card-body d-flex align-items-center justify-content-center p-4">
+                <div style="max-height: 250px; position: relative; width: 100%;">
+                    <canvas id="feeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart: Grades Distribution -->
+    <div class="col-lg-6 animate-fade-in" style="animation-delay: 0.3s;">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3 bg-white border-0"><h6 class="mb-0 fw-bold"><i class="bi bi-graph-up me-2 text-info"></i>Grade Letter Spread</h6></div>
+            <div class="card-body d-flex align-items-center justify-content-center p-4">
+                <div style="max-height: 250px; position: relative; width: 100%;">
+                    <canvas id="gradeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Render Scripts -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Fetch variables
+        var attendanceRaw = JSON.parse('{{ attendance_json|safe }}');
+        var courseLabels = JSON.parse('{{ course_labels_json|safe }}');
+        var courseCounts = JSON.parse('{{ course_counts_json|safe }}');
+        var feeRaw = JSON.parse('{{ fee_json|safe }}');
+        var gradeLabels = JSON.parse('{{ grade_labels_json|safe }}');
+        var gradeCounts = JSON.parse('{{ grade_counts_json|safe }}');
+
+        // 1. Attendance Chart (Doughnut)
+        new Chart(document.getElementById('attendanceChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Absent'],
+                datasets: [{
+                    data: [attendanceRaw.present, attendanceRaw.absent],
+                    backgroundColor: ['#198754', '#dc3545'],
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // 2. Course Enrollment Chart (Bar)
+        new Chart(document.getElementById('courseChart'), {
+            type: 'bar',
+            data: {
+                labels: courseLabels,
+                datasets: [{
+                    label: 'Enrolled Students',
+                    data: courseCounts,
+                    backgroundColor: '#0d6efd',
+                    borderWidth: 0,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+
+        // 3. Fee Chart (Pie)
+        new Chart(document.getElementById('feeChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Paid', 'Partial Paid', 'Pending'],
+                datasets: [{
+                    data: [feeRaw.paid, feeRaw.partial, feeRaw.pending],
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // 4. Grades distribution (Horizontal Bar)
+        new Chart(document.getElementById('gradeChart'), {
+            type: 'bar',
+            data: {
+                labels: gradeLabels,
+                datasets: [{
+                    label: 'Grade Count',
+                    data: gradeCounts,
+                    backgroundColor: '#0dcaf0',
+                    borderWidth: 0,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+    });
+</script>
+
 {% endblock %}

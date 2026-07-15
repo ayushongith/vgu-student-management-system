@@ -13,7 +13,47 @@ import json
 
 @admin_required
 def reports_dashboard(request):
-    return render(request, 'reports_app/reports_dashboard.html')
+    import json
+    # 1. Attendance Present vs Absent
+    attendance_stats = Attendance.objects.values('status').annotate(count=Count('id'))
+    attendance_data = {'present': 0, 'absent': 0}
+    for stat in attendance_stats:
+        if stat['status'] in attendance_data:
+            attendance_data[stat['status']] = stat['count']
+
+    # 2. Course Enrollment distribution
+    course_stats = Student.objects.values('course__code').annotate(count=Count('id'))
+    course_labels = []
+    course_counts = []
+    for stat in course_stats:
+        if stat['course__code']:
+            course_labels.append(stat['course__code'])
+            course_counts.append(stat['count'])
+
+    # 3. Fee Payments counts
+    fee_stats = FeePayment.objects.values('status').annotate(count=Count('id'))
+    fee_data = {'paid': 0, 'partial': 0, 'pending': 0}
+    for stat in fee_stats:
+        if stat['status'] in fee_data:
+            fee_data[stat['status']] = stat['count']
+
+    # 4. Grades split
+    grade_stats = Marks.objects.values('grade').annotate(count=Count('id')).order_by('grade')
+    grade_labels = []
+    grade_counts = []
+    for stat in grade_stats:
+        if stat['grade']:
+            grade_labels.append(stat['grade'])
+            grade_counts.append(stat['count'])
+
+    return render(request, 'reports_app/reports_dashboard.html', {
+        'attendance_json': json.dumps(attendance_data),
+        'course_labels_json': json.dumps(course_labels),
+        'course_counts_json': json.dumps(course_counts),
+        'fee_json': json.dumps(fee_data),
+        'grade_labels_json': json.dumps(grade_labels),
+        'grade_counts_json': json.dumps(grade_counts),
+    })
 
 
 @admin_required
