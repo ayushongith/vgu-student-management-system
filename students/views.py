@@ -106,9 +106,21 @@ def my_timetable(request):
     student = Student.objects.filter(user=request.user).first()
     if not student:
         return redirect('dashboard')
-    slots = Timetable.objects.filter(
+    
+    all_slots = Timetable.objects.filter(
         course=student.course, semester=student.semester
     ).select_related('subject', 'teacher')
+    
+    from subjects.models import ElectiveEnrollment
+    enrolled_elective_ids = set(
+        ElectiveEnrollment.objects.filter(student=student).values_list('subject_id', flat=True)
+    )
+    
+    slots = [
+        slot for slot in all_slots
+        if not slot.subject.is_elective or slot.subject.id in enrolled_elective_ids
+    ]
+    
     return render(request, 'students/my_timetable.html', {'slots': slots})
 
 
@@ -118,7 +130,19 @@ def my_assignments(request):
     if not student:
         return redirect('dashboard')
     from assignments.models import Assignment, Submission
-    assignments = Assignment.objects.filter(subject__course=student.course).select_related('subject', 'teacher')
+    from subjects.models import ElectiveEnrollment
+    
+    enrolled_elective_ids = set(
+        ElectiveEnrollment.objects.filter(student=student).values_list('subject_id', flat=True)
+    )
+    
+    all_assignments = Assignment.objects.filter(subject__course=student.course).select_related('subject', 'teacher')
+    
+    assignments = [
+        a for a in all_assignments
+        if not a.subject.is_elective or a.subject.id in enrolled_elective_ids
+    ]
+    
     submissions = Submission.objects.filter(student=student)
     submitted_ids = submissions.values_list('assignment_id', flat=True)
     return render(request, 'students/my_assignments.html', {

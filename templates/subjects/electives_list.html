@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %}
+{% block title %}Elective Choices{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h4>Elective Choices</h4>
+    <ul>
+    {% for elective in electives %}
+        <li>{{ elective.name }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
