@@ -41,9 +41,21 @@ def seed():
     t2 = Teacher.objects.create(user=t2_user, employee_id='EMP002', department=dept_me, qualification='M.Tech', phone='0987654321')
 
     print("Creating Subjects...")
-    sub_ds = Subject.objects.create(name='Data Structures', code='CS201', course=course_btech_cs, teacher=t1, credits=4)
-    sub_algo = Subject.objects.create(name='Algorithms', code='CS202', course=course_btech_cs, teacher=t1, credits=4)
-    sub_thermo = Subject.objects.create(name='Thermodynamics', code='ME201', course=course_btech_me, teacher=t2, credits=4)
+    sub_ds = Subject.objects.create(name='Data Structures', code='CS201', course=course_btech_cs, teacher=t1, credits=4, semester=2)
+    sub_algo = Subject.objects.create(name='Algorithms', code='CS202', course=course_btech_cs, teacher=t1, credits=4, semester=2)
+    sub_thermo = Subject.objects.create(name='Thermodynamics', code='ME201', course=course_btech_me, teacher=t2, credits=4, semester=2)
+
+    # Elective Subjects
+    Subject.objects.create(
+        name='Cloud Architecture', code='CS303', course=course_btech_cs, teacher=t1, credits=3,
+        semester=2, is_elective=True, max_capacity=3,
+        description='Comprehensive overview of cloud deployment patterns, virtualization mechanics, and multi-tenant architectures.'
+    )
+    Subject.objects.create(
+        name='Advanced Cryptography', code='CS304', course=course_btech_cs, teacher=t1, credits=3,
+        semester=2, is_elective=True, max_capacity=10,
+        description='Detailed study of public key infrastructures, elliptic curve cryptography, and post-quantum security protocols.'
+    )
 
     print("Creating Students...")
     students = []
